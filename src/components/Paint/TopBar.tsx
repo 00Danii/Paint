@@ -14,6 +14,7 @@ import {
   RotateCcw,
   RotateCw,
   Palette,
+  PaintRoller,
 } from "lucide-react";
 import { useCanvas } from "../../contexts/CanvasContext";
 import { useTheme } from "next-themes";
@@ -99,7 +100,7 @@ export default function TopBar() {
               Guardar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleClear}>
-              <Upload className="w-4 h-4 mr-2" />
+              <PaintRoller className="w-4 h-4 mr-2" />
               Limpiar
             </DropdownMenuItem>
           </DropdownMenuContent>
