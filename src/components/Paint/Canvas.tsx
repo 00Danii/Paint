@@ -29,10 +29,18 @@ export default function Canvas() {
   // Atajos de teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevenir que se ejecuten en inputs
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
       if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
+        switch (e.key.toLowerCase()) {
           case "z":
-            console.log("HOLA")
+            console.log("HOLA");
             e.preventDefault();
             if (e.shiftKey) {
               handleRedo();
@@ -48,46 +56,56 @@ export default function Canvas() {
       } else {
         switch (e.key.toLowerCase()) {
           case "b":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "brush" });
             break;
           case "e":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "eraser" });
             break;
           case "l":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "line" });
             break;
           case "r":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "rectangle" });
             break;
           case "c":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "circle" });
             break;
           case "f":
+            e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "fill" });
             break;
         }
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [dispatch]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [dispatch, state.historyIndex, state.history.length]);
 
   const handleUndo = () => {
-    dispatch({ type: "UNDO" });
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (ctx && state.history[state.historyIndex - 1]) {
-      ctx.putImageData(state.history[state.historyIndex - 1], 0, 0);
+    if (state.historyIndex > 0) {
+      dispatch({ type: "UNDO" });
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (ctx && state.history[state.historyIndex - 1]) {
+        ctx.putImageData(state.history[state.historyIndex - 1], 0, 0);
+      }
     }
   };
 
   const handleRedo = () => {
-    dispatch({ type: "REDO" });
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (ctx && state.history[state.historyIndex + 1]) {
-      ctx.putImageData(state.history[state.historyIndex + 1], 0, 0);
+    if (state.historyIndex < state.history.length - 1) {
+      dispatch({ type: "REDO" });
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (ctx && state.history[state.historyIndex + 1]) {
+        ctx.putImageData(state.history[state.historyIndex + 1], 0, 0);
+      }
     }
   };
 
