@@ -16,15 +16,17 @@ import {
   Palette,
 } from "lucide-react";
 import { useCanvas } from "../../contexts/CanvasContext";
+import { useTheme } from "next-themes";
 
 export default function TopBar() {
   const { state, dispatch, canvasRef } = useCanvas();
+  const { theme } = useTheme();
 
   const handleSave = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       const link = document.createElement("a");
-      link.download = "artwork.png";
+      link.download = "arte-uwu.png";
       link.href = canvas.toDataURL();
       link.click();
     }
@@ -34,7 +36,7 @@ export default function TopBar() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (ctx && canvas) {
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = theme == "dark" ? "#000000" : "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   };

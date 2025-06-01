@@ -12,22 +12,23 @@ import {
   PaintBucket,
 } from "lucide-react";
 import { useCanvas, type Tool } from "../../contexts/CanvasContext";
+import { ToggleTheme } from "../theme/theme-button";
 
 const tools: { id: Tool; icon: React.ReactNode; label: string }[] = [
   { id: "brush", icon: <Brush className="w-5 h-5" />, label: "Pincel (B)" },
   { id: "eraser", icon: <Eraser className="w-5 h-5" />, label: "Borrador (E)" },
-  // { id: "line", icon: <Minus className="w-5 h-5" />, label: "Línea (L)" },
-  // {
-  //   id: "rectangle",
-  //   icon: <Square className="w-5 h-5" />,
-  //   label: "Rectángulo (R)",
-  // },
-  // { id: "circle", icon: <Circle className="w-5 h-5" />, label: "Círculo (C)" },
-  // {
-  //   id: "fill",
-  //   icon: <PaintBucket className="w-5 h-5" />,
-  //   label: "Relleno (F)",
-  // },
+  { id: "line", icon: <Minus className="w-5 h-5" />, label: "Línea (L)" },
+  {
+    id: "rectangle",
+    icon: <Square className="w-5 h-5" />,
+    label: "Rectángulo (R)",
+  },
+  { id: "circle", icon: <Circle className="w-5 h-5" />, label: "Círculo (C)" },
+  {
+    id: "fill",
+    icon: <PaintBucket className="w-5 h-5" />,
+    label: "Relleno (F)",
+  },
 ];
 
 export default function Toolbar() {
@@ -65,6 +66,12 @@ export default function Toolbar() {
           />
         </div>
         <div className="text-xs text-center">{state.brushSize}px</div>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        <div className="flex justify-center">
+          <ToggleTheme />
+        </div>
       </div>
     </div>
   );
