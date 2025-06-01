@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import RootLayout from "./layout";
+import PaintApp from "@/PaintApp";
 
 function Home() {
   return (
-    <div>Home</div>
-  )
+    <RootLayout>
+      <PaintApp />
+    </RootLayout>
+  );
 }
 
-export default Home
+export default Home;
