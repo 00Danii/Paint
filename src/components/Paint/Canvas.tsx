@@ -24,7 +24,7 @@ export default function Canvas() {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       dispatch({ type: "ADD_TO_HISTORY", payload: imageData });
     }
-  }, [dispatch]);
+  }, [dispatch, theme]);
 
   // Atajos de teclado
   useEffect(() => {
@@ -32,6 +32,7 @@ export default function Canvas() {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
           case "z":
+            console.log("HOLA")
             e.preventDefault();
             if (e.shiftKey) {
               handleRedo();
