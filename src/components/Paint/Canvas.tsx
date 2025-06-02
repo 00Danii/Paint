@@ -347,8 +347,8 @@ export default function Canvas() {
   };
 
   return (
-    <div className="flex-1 p-4 overflow-hidden dark:bg-zinc-900">
-      <div className="bg-white dark:bg-black rounded-lg shadow-2xl  overflow-hidden h-full flex items-center justify-center">
+    <div className="flex-1 p-2 sm:p-4 overflow-hidden dark:bg-zinc-900 flex flex-col">
+      <div className="bg-white dark:bg-black rounded-lg shadow-2xl overflow-hidden flex-1 flex items-center justify-center min-h-0">
         <canvas
           ref={canvasRef}
           width={1200}
@@ -358,7 +358,15 @@ export default function Canvas() {
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
           className="block max-w-full h-auto"
-          style={{ cursor: getCursorStyle() }}
+          style={{
+            cursor: getCursorStyle(),
+            imageRendering: "pixelated",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            width: "auto",
+            height: "auto",
+          }}
         />
       </div>
     </div>

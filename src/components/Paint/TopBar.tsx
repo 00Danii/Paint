@@ -61,22 +61,26 @@ export default function TopBar() {
   };
 
   return (
-    <div className="flex items-center justify-between p-3 dark:bg-black">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2">
-          {/* <Palette className="w-6 h-6 " />
-          <h1 className="text-xl font-bold ">Paint</h1> */}
+    <div className="flex items-center justify-between p-2 sm:p-3 dark:bg-black">
+      <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Palette className="w-5 h-5 sm:w-6 sm:h-6 " />
+          <h1 className="text-sm sm:text-xl font-bold  bg-clip-text ">
+            <span className="hidden sm:inline">Pizarrón</span>
+          </h1>
+          <span className="sm:hidden">Pizarrón</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <Button
           variant="ghost"
           size="sm"
           onClick={handleUndo}
           disabled={state.historyIndex <= 0}
+          className=" h-8 w-8 sm:h-auto sm:w-auto p-1 sm:p-2"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" />
         </Button>
 
         <Button
@@ -84,14 +88,20 @@ export default function TopBar() {
           size="sm"
           onClick={handleRedo}
           disabled={state.historyIndex >= state.history.length - 1}
+          className=" h-8 w-8 sm:h-auto sm:w-auto p-1 sm:p-2"
         >
-          <RotateCw className="w-4 h-4" />
+          <RotateCw className="w-3 h-3 sm:w-4 sm:h-4" />
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              Archivo
+            <Button
+              variant="ghost"
+              size="sm"
+              className=" text-xs sm:text-sm px-2 sm:px-3"
+            >
+              <span className="hidden sm:inline">Archivo</span>
+              <span className="sm:hidden">•••</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -100,7 +110,7 @@ export default function TopBar() {
               Guardar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleClear}>
-              <PaintRoller className="w-4 h-4 mr-2" />
+              <Upload className="w-4 h-4 mr-2" />
               Limpiar
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -110,11 +120,12 @@ export default function TopBar() {
           variant="ghost"
           size="sm"
           onClick={() => dispatch({ type: "TOGGLE_FULLSCREEN" })}
+          className="hidden sm:flex h-8 w-8 sm:h-auto sm:w-auto p-1 sm:p-2"
         >
           {state.isFullscreen ? (
-            <Minimize className="w-4 h-4" />
+            <Minimize className="w-3 h-3 sm:w-4 sm:h-4" />
           ) : (
-            <Maximize className="w-4 h-4" />
+            <Maximize className="w-3 h-3 sm:w-4 sm:h-4" />
           )}
         </Button>
       </div>
