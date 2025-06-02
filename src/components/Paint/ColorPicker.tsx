@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { useCanvas } from "@/contexts/CanvasContext";
+import { Colorful } from "@uiw/react-color";
+import { hsvaToHex, hsvaToRgbaString } from "@uiw/color-convert";
 
 // Paletas organizadas por categorías
 const colorCategories = {
@@ -221,11 +223,13 @@ const allColors = Object.values(colorCategories).flatMap(
 
 export default function ColorPicker() {
   const { state, dispatch } = useCanvas();
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("picker");
   const [customColor, setCustomColor] = useState(state.color);
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
+
+  const [customAlpha, setCustomAlpha] = useState(1);
 
   // Convertir HSL a HEX
   const hslToHex = (h: number, s: number, l: number) => {
@@ -252,14 +256,14 @@ export default function ColorPicker() {
     <div className="p-2 sm:p-4">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="picker" className="text-xs sm:text-sm">
+            Selector
+          </TabsTrigger>
           <TabsTrigger value="all" className="text-xs sm:text-sm">
             Todos
           </TabsTrigger>
           <TabsTrigger value="custom" className="text-xs sm:text-sm">
             HSL
-          </TabsTrigger>
-          <TabsTrigger value="picker" className="text-xs sm:text-sm">
-            Selector
           </TabsTrigger>
         </TabsList>
 
@@ -365,17 +369,15 @@ export default function ColorPicker() {
         </TabsContent>
 
         <TabsContent value="picker" className="space-y-4 mt-3">
-          {/* Input de color nativo */}
           <div className="space-y-2">
-            <div className="text-xs font-medium">Selector de Color</div>
-            <input
-              type="color"
-              value={customColor}
-              onChange={(e) => {
-                setCustomColor(e.target.value);
-                dispatch({ type: "SET_COLOR", payload: e.target.value });
+            <Colorful
+              color={customColor}
+              onChange={(color) => {
+                setCustomColor(color.hex);
+                dispatch({ type: "SET_COLOR", payload: color.hex });
               }}
-              className="w-full h-12 rounded-md bg-transparent cursor-pointer"
+              style={{ width: "100%" }}
+              disableAlpha
             />
           </div>
 
