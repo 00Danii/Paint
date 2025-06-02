@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useCanvas } from "../../contexts/CanvasContext";
 import { useTheme } from "next-themes";
+import KeyboardShortcutsModal from "./ModalAtajos";
 
 export default function TopBar() {
   const { state, dispatch, canvasRef } = useCanvas();
@@ -116,6 +117,9 @@ export default function TopBar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Modal de atajos de teclado */}
+        <KeyboardShortcutsModal />
+        
         <Button
           variant="ghost"
           size="sm"
