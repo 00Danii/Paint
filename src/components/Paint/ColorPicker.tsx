@@ -229,8 +229,6 @@ export default function ColorPicker() {
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
 
-  const [customAlpha, setCustomAlpha] = useState(1);
-
   // Convertir HSL a HEX
   const hslToHex = (h: number, s: number, l: number) => {
     l /= 100;
