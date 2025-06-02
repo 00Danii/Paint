@@ -253,16 +253,16 @@ export default function ColorPicker() {
   return (
     <div className="p-2 sm:p-4">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="picker" className="text-xs sm:text-sm">
             Selector
           </TabsTrigger>
           <TabsTrigger value="all" className="text-xs sm:text-sm">
             Todos
           </TabsTrigger>
-          <TabsTrigger value="custom" className="text-xs sm:text-sm">
+          {/* <TabsTrigger value="custom" className="text-xs sm:text-sm">
             HSL
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         {/* Color actual */}
@@ -305,8 +305,8 @@ export default function ColorPicker() {
           </div>
         </TabsContent>
 
-        <TabsContent value="custom" className="space-y-4 mt-3">
-          {/* Controles HSL */}
+        {/* Controles HSL */}
+        {/* <TabsContent value="custom" className="space-y-4 mt-3">
           <div className="space-y-3">
             <div>
               <div className="text-xs font-medium mb-2">Matiz (Hue)</div>
@@ -357,14 +357,13 @@ export default function ColorPicker() {
             </div>
           </div>
 
-          {/* Vista previa del color personalizado */}
           <div className="flex items-center gap-2">
             <div
               className="w-full h-12 rounded-md"
               style={{ backgroundColor: hslToHex(hue, saturation, lightness) }}
             />
           </div>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="picker" className="space-y-4 mt-3">
           <div className="space-y-2">
