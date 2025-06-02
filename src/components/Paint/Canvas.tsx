@@ -357,7 +357,30 @@ export default function Canvas() {
           onMouseMove={draw}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
-          className="block max-w-full h-auto"
+          // Eventos táctiles para móviles
+          onTouchStart={(e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousedown", {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            });
+            startDrawing(mouseEvent as any);
+          }}
+          onTouchMove={(e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousemove", {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            });
+            draw(mouseEvent as any);
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            stopDrawing();
+          }}
+          className="block touch-none max-w-full h-auto"
           style={{
             cursor: getCursorStyle(),
             imageRendering: "pixelated",
