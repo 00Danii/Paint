@@ -10,7 +10,6 @@ import {
   Maximize,
   Minimize,
   Download,
-  Upload,
   RotateCcw,
   RotateCw,
   Palette,
