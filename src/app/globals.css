@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Estilos globales para scrollbars */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
