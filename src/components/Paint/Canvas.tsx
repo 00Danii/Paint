@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCanvas } from "../../contexts/CanvasContext";
 import { useTheme } from "next-themes";
 
@@ -83,6 +83,14 @@ export default function Canvas() {
           case "f":
             e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "fill" });
+            break;
+          case "s":
+            e.preventDefault();
+            dispatch({ type: "SET_TOOL", payload: "spray-brush" });
+            break;
+          case "d":
+            e.preventDefault();
+            dispatch({ type: "SET_TOOL", payload: "blur" });
             break;
         }
       }
@@ -188,6 +196,172 @@ export default function Canvas() {
     ctx.putImageData(imageData, 0, 0);
   };
 
+  // Función para aplicar difuminado
+  const applyBlur = (x: number, y: number, intensity: number) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!ctx) return;
+
+    const radius = state.brushSize * 5;
+    const imageData = ctx.getImageData(
+      Math.max(0, x - radius),
+      Math.max(0, y - radius),
+      radius * 2,
+      radius * 2
+    );
+
+    // Aplicar un filtro de desenfoque simple
+    const pixels = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    const tempPixels = new Uint8ClampedArray(pixels);
+
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
+        const idx = (i * width + j) * 4;
+
+        // Distancia al centro
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const distance = Math.sqrt(
+          Math.pow(j - centerX, 2) + Math.pow(i - centerY, 2)
+        );
+
+        // Solo aplicar dentro del radio del pincel
+        if (distance <= radius) {
+          let r = 0,
+            g = 0,
+            b = 0,
+            a = 0,
+            count = 0;
+
+          // Tamaño del kernel basado en la intensidad
+          const kernelSize = Math.max(1, Math.floor(intensity / 2));
+
+          // Aplicar kernel de desenfoque
+          for (let ky = -kernelSize; ky <= kernelSize; ky++) {
+            for (let kx = -kernelSize; kx <= kernelSize; kx++) {
+              const x = j + kx;
+              const y = i + ky;
+
+              if (x >= 0 && x < width && y >= 0 && y < height) {
+                const offset = (y * width + x) * 4;
+                r += tempPixels[offset];
+                g += tempPixels[offset + 1];
+                b += tempPixels[offset + 2];
+                a += tempPixels[offset + 3];
+                count++;
+              }
+            }
+          }
+
+          // Aplicar el promedio
+          if (count > 0) {
+            pixels[idx] = r / count;
+            pixels[idx + 1] = g / count;
+            pixels[idx + 2] = b / count;
+            pixels[idx + 3] = a / count;
+          }
+        }
+      }
+    }
+
+    ctx.putImageData(
+      imageData,
+      Math.max(0, x - radius),
+      Math.max(0, y - radius)
+    );
+  };
+
+  // Función para dibujar con spray
+  const drawSpray = (x: number, y: number, color: string, size: number) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!ctx) return;
+
+    const density = size * 2; // Cantidad de puntos
+    const radius = size * 2; // Radio del spray
+
+    ctx.fillStyle = color;
+
+    for (let i = 0; i < density; i++) {
+      // Generar posición aleatoria dentro del radio
+      const angle = Math.random() * Math.PI * 2;
+      const radiusRandom = Math.random() * radius;
+      const dotX = x + radiusRandom * Math.cos(angle);
+      const dotY = y + radiusRandom * Math.sin(angle);
+
+      // Dibujar punto
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, Math.random() * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  };
+
+  // Función para dibujar con pincel de textura
+  const drawTexturedBrush = (
+    x: number,
+    y: number,
+    color: string,
+    size: number
+  ) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!ctx) return;
+
+    // Crear un patrón de textura
+    const patternSize = size * 2;
+    const patternCanvas = document.createElement("canvas");
+    patternCanvas.width = patternSize;
+    patternCanvas.height = patternSize;
+    const patternCtx = patternCanvas.getContext("2d");
+
+    if (patternCtx) {
+      // Dibujar textura base
+      patternCtx.fillStyle = color;
+      patternCtx.fillRect(0, 0, patternSize, patternSize);
+
+      // Añadir ruido para textura
+      for (let i = 0; i < (patternSize * patternSize) / 4; i++) {
+        const noiseX = Math.floor(Math.random() * patternSize);
+        const noiseY = Math.floor(Math.random() * patternSize);
+        const brightness = Math.random() * 50 - 25; // Variación de brillo
+
+        patternCtx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, 0.5)`;
+        patternCtx.fillRect(noiseX, noiseY, 1, 1);
+      }
+
+      // Usar el patrón para dibujar
+      const pattern = ctx.createPattern(patternCanvas, "repeat");
+      if (pattern) {
+        ctx.save();
+        ctx.fillStyle = pattern;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  };
+
+  // Función para usar el cuenta gotas
+  const useEyedropper = (x: number, y: number) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!ctx) return;
+
+    // Obtener el color del pixel
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const color = `#${pixel[0].toString(16).padStart(2, "0")}${pixel[1]
+      .toString(16)
+      .padStart(2, "0")}${pixel[2].toString(16).padStart(2, "0")}`;
+
+    // Establecer el color y volver a la herramienta anterior
+    dispatch({ type: "SET_COLOR", payload: color });
+    dispatch({ type: "SET_EYEDROPPER_ACTIVE", payload: false });
+    dispatch({ type: "SET_TOOL", payload: "brush" });
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getMousePos(e);
     startPos.current = pos;
@@ -235,6 +409,16 @@ export default function Canvas() {
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
     }
+
+    // Para spray
+    if (state.tool === "spray-brush") {
+      drawSpray(pos.x, pos.y, state.color, state.brushSize);
+    }
+
+    // Para difuminado
+    if (state.tool === "blur") {
+      applyBlur(pos.x, pos.y, state.brushSize);
+    }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -251,8 +435,21 @@ export default function Canvas() {
         ctx.globalCompositeOperation = "source-over";
         ctx.strokeStyle = state.color;
         ctx.lineWidth = state.brushSize;
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
+        if (state.brushType === "round") {
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        } else if (state.brushType === "square") {
+          ctx.lineCap = "square";
+          ctx.lineJoin = "miter";
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        } else if (state.brushType === "texture") {
+          drawTexturedBrush(pos.x, pos.y, state.color, state.brushSize);
+        } else if (state.brushType === "spray") {
+          drawSpray(pos.x, pos.y, state.color, state.brushSize);
+        }
         break;
 
       case "eraser":
@@ -308,6 +505,14 @@ export default function Canvas() {
           ctx.stroke();
         }
         break;
+
+      case "spray-brush":
+        drawSpray(pos.x, pos.y, state.color, state.brushSize);
+        break;
+
+      case "blur":
+        applyBlur(pos.x, pos.y, state.brushSize);
+        break;
     }
   };
 
@@ -341,6 +546,12 @@ export default function Canvas() {
         return "crosshair";
       case "fill":
         return "pointer";
+      case "eyedropper":
+        return "crosshair";
+      case "blur":
+        return "cell";
+      case "spray-brush":
+        return "crosshair";
       default:
         return "default";
     }

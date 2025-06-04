@@ -19,6 +19,8 @@ const shortcuts = [
       { key: "R", description: "Seleccionar Rectángulo" },
       { key: "C", description: "Seleccionar Círculo" },
       { key: "F", description: "Seleccionar Relleno" },
+      { key: "S", description: "Seleccionar Spray" },
+      { key: "D", description: "Seleccionar Difuminado" },
     ],
   },
   {
@@ -103,6 +105,10 @@ export default function KeyboardShortcutsModal() {
               </li>
               <li>
                 • Puedes cambiar herramientas rápidamente mientras dibujas
+              </li>
+              <li>• Usa el cuenta gotas para seleccionar colores del canvas</li>
+              <li>
+                • Prueba diferentes tipos de pinceles para efectos variados
               </li>
             </ul>
           </div>
