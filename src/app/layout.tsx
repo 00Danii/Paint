@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://i.imgur.com/snkIKQi.png",
+        width: 1200,
+        height: 630,
         alt: "Vista previa del pizarrón",
       },
     ],
