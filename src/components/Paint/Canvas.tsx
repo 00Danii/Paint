@@ -92,6 +92,10 @@ export default function Canvas() {
             dispatch({ type: "SET_TOOL", payload: "blur" });
             state.brushSize = 5;
             break;
+          case "i":
+            e.preventDefault();
+            dispatch({ type: "SET_TOOL", payload: "eyedropper" });
+            break;
         }
       }
     };

@@ -386,7 +386,7 @@ export default function ColorPicker() {
         <TabsContent value="picker" className="space-y-4 mt-3">
           <div className="space-y-2">
             <Colorful
-              color={customColor}
+              color={state.color}
               onChange={(color) => {
                 setCustomColor(color.hex);
                 dispatch({ type: "SET_COLOR", payload: color.hex });
