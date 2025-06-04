@@ -11,8 +11,9 @@ import {
   Circle,
   PaintBucket,
   Sparkles,
-  Droplets,
   ChevronDown,
+  SprayCan,
+  Hand,
 } from "lucide-react";
 import {
   useCanvas,
@@ -60,6 +61,11 @@ const tools: {
     label: "Círculo (C)",
   },
   {
+    id: "blur",
+    icon: <Hand className="w-4 h-4 sm:w-5 sm:h-5" />,
+    label: "Difuminar (D)",
+  },
+  {
     id: "fill",
     icon: <PaintBucket className="w-4 h-4 sm:w-5 sm:h-5" />,
     label: "Relleno (F)",
@@ -70,7 +76,7 @@ const brushTypes: { id: BrushType; name: string; icon: React.ReactNode }[] = [
   { id: "round", name: "Redondo", icon: <Circle className="w-4 h-4" /> },
   { id: "square", name: "Cuadrado", icon: <Square className="w-4 h-4" /> },
   { id: "texture", name: "Textura", icon: <Sparkles className="w-4 h-4" /> },
-  { id: "spray", name: "Spray", icon: <Droplets className="w-4 h-4" /> },
+  { id: "spray", name: "Spray", icon: <SprayCan className="w-4 h-4" /> },
 ];
 
 export default function Toolbar() {
@@ -101,10 +107,7 @@ export default function Toolbar() {
             const isActive = state.tool === tool.id;
 
             // Si la herramienta tiene tipos de pincel, mostrar dropdown
-            if (
-              tool.hasBrushTypes &&
-              (tool.id === "brush")
-            ) {
+            if (tool.hasBrushTypes && tool.id === "brush") {
               return (
                 <DropdownMenu key={tool.id}>
                   <DropdownMenuTrigger asChild>
@@ -159,7 +162,10 @@ export default function Toolbar() {
                 key={tool.id}
                 variant={state.tool === tool.id ? "default" : "ghost"}
                 size="sm"
-                onClick={() => dispatch({ type: "SET_TOOL", payload: tool.id })}
+                onClick={() => {
+                  dispatch({ type: "SET_TOOL", payload: tool.id });
+                  if (tool.id == "blur") state.brushSize = 5;
+                }}
                 className={`h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-full p-0 ${
                   state.tool === tool.id ? "" : ""
                 }`}
@@ -173,38 +179,51 @@ export default function Toolbar() {
 
         {/* Control de tamaño - Solo visible en desktop o como último elemento en móvil */}
         <div className="hidden lg:block lg:mt-6 lg:space-y-3 min-w-max lg:min-w-0">
-          <div className="text-xs font-medium">Tamaño</div>
+          <div className="text-xs font-medium">
+            {state.tool === "blur" ? "Intensidad" : "Tamaño"}
+          </div>
           <div className="px-2">
             <Slider
               value={[state.brushSize]}
               onValueChange={(value) =>
                 dispatch({ type: "SET_BRUSH_SIZE", payload: value[0] })
               }
-              max={50}
+              max={state.tool === "blur" ? 10 : 50}
               min={1}
               step={1}
               className="w-full"
             />
           </div>
-          <div className="text-xs text-center">{state.brushSize}px</div>
+          <div className="text-xs text-center">
+            {" "}
+            {state.brushSize}
+            {state.tool === "blur" ? "" : "px"}
+          </div>
         </div>
 
         {/* Control de tamaño para móvil */}
         <div className="flex lg:hidden items-center gap-2 min-w-max">
-          <span className="text-xs font-medium whitespace-nowrap">Tamaño:</span>
+          <span className="text-xs font-medium whitespace-nowrap">
+            {" "}
+            {state.tool === "blur" ? "Intensidad" : "Tamaño"}
+          </span>
           <div className="w-16 sm:w-20">
             <Slider
               value={[state.brushSize]}
               onValueChange={(value) =>
                 dispatch({ type: "SET_BRUSH_SIZE", payload: value[0] })
               }
-              max={50}
+              max={state.tool === "blur" ? 10 : 50}
               min={1}
               step={1}
               className="w-full"
             />
           </div>
-          <span className="text-xs min-w-max">{state.brushSize}px</span>
+          <span className="text-xs min-w-max">
+            {" "}
+            {state.brushSize}
+            {state.tool === "blur" ? "" : "px"}
+          </span>
         </div>
 
         <div className="flex justify-center">

@@ -91,6 +91,7 @@ export default function Canvas() {
           case "d":
             e.preventDefault();
             dispatch({ type: "SET_TOOL", payload: "blur" });
+            state.brushSize = 5;
             break;
         }
       }
