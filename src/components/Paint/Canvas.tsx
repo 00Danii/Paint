@@ -406,11 +406,6 @@ export default function Canvas() {
       ctx.moveTo(pos.x, pos.y);
     }
 
-    if (state.tool === "brush" || state.tool === "eraser") {
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y);
-    }
-
     // Para spray
     if (state.tool === "spray-brush") {
       drawSpray(pos.x, pos.y, state.color, state.brushSize);
@@ -454,7 +449,11 @@ export default function Canvas() {
         break;
 
       case "eraser":
-        ctx.globalCompositeOperation = "destination-out";
+        // ctx.globalCompositeOperation = "destination-out";
+        // * Solucion al borrador, era pintar por encima
+        // * Y cambiar el color segun el tema
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = theme === "dark" ? "#000000" : "#ffffff";
         ctx.lineWidth = state.brushSize * 2;
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
