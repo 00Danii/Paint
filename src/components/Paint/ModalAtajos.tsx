@@ -21,6 +21,7 @@ const shortcuts = [
       { key: "F", description: "Seleccionar Relleno" },
       { key: "S", description: "Seleccionar Spray" },
       { key: "D", description: "Seleccionar Difuminado" },
+      { key: "I", description: "Seleccionar Cuenta Gotas" },
     ],
   },
   {
