@@ -12,6 +12,15 @@ export default function Canvas() {
   const tempImageData = useRef<ImageData | null>(null);
   const { theme } = useTheme();
 
+  // Estados para el tooltip del eyedropper
+  const [eyedropperTooltip, setEyedropperTooltip] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    color: "#000000",
+    rgb: "rgb(0, 0, 0)",
+  });
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -30,6 +39,13 @@ export default function Canvas() {
       }
     }
   }, [dispatch, theme]);
+
+  // Ocultar tooltip cuando se cambia de herramienta
+  useEffect(() => {
+    if (state.tool !== "eyedropper") {
+      setEyedropperTooltip((prev) => ({ ...prev, visible: false }));
+    }
+  }, [state.tool]);
 
   // Atajos de teclado
   useEffect(() => {
@@ -348,22 +364,77 @@ export default function Canvas() {
     }
   };
 
+  // Función para obtener el color en una posición específica
+  const getColorAtPosition = (x: number, y: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    try {
+      const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
+      const r = pixel[0];
+      const g = pixel[1];
+      const b = pixel[2];
+      const hex = `#${r.toString(16).padStart(2, "0")}${g
+        .toString(16)
+        .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+      const rgb = `rgb(${r}, ${g}, ${b})`;
+
+      return { hex, rgb, r, g, b };
+    } catch (error) {
+      return null;
+    }
+  };
+
+  // Función para actualizar el tooltip del eyedropper
+  const updateEyedropperTooltip = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (state.tool !== "eyedropper") return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const pos = getMousePos(e);
+    const colorInfo = getColorAtPosition(pos.x, pos.y);
+
+    if (colorInfo) {
+      setEyedropperTooltip({
+        visible: true,
+        x: e.clientX,
+        y: e.clientY - 60, // Posición arriba del cursor
+        color: colorInfo.hex,
+        rgb: colorInfo.rgb,
+      });
+    }
+  };
+
   // Función para usar el cuenta gotas
   const useEyedropper = (x: number, y: number) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (!ctx) return;
+    // const canvas = canvasRef.current;
+    // const ctx = canvas?.getContext("2d");
+    // if (!ctx) return;
 
-    // Obtener el color del pixel
-    const pixel = ctx.getImageData(x, y, 1, 1).data;
-    const color = `#${pixel[0].toString(16).padStart(2, "0")}${pixel[1]
-      .toString(16)
-      .padStart(2, "0")}${pixel[2].toString(16).padStart(2, "0")}`;
+    // // Obtener el color del pixel
+    // const pixel = ctx.getImageData(x, y, 1, 1).data;
+    // const color = `#${pixel[0].toString(16).padStart(2, "0")}${pixel[1]
+    //   .toString(16)
+    //   .padStart(2, "0")}${pixel[2].toString(16).padStart(2, "0")}`;
 
-    // Establecer el color y volver a la herramienta anterior
-    dispatch({ type: "SET_COLOR", payload: color });
-    dispatch({ type: "SET_EYEDROPPER_ACTIVE", payload: false });
+    // // Establecer el color y volver a la herramienta anterior
+    // dispatch({ type: "SET_COLOR", payload: color });
+    // dispatch({ type: "SET_EYEDROPPER_ACTIVE", payload: false });
+    // dispatch({ type: "SET_TOOL", payload: "brush" });
+
+    const colorInfo = getColorAtPosition(x, y);
+    if (!colorInfo) return;
+
+    dispatch({ type: "SET_COLOR", payload: colorInfo.hex });
     dispatch({ type: "SET_TOOL", payload: "brush" });
+
+    // Ocultar tooltip
+    setEyedropperTooltip((prev) => ({ ...prev, visible: false }));
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -371,8 +442,24 @@ export default function Canvas() {
     startPos.current = pos;
 
     // Si la herramienta es eyedropper, tomar el color y salir
+    // if (state.tool === "eyedropper") {
+    //   useEyedropper(Math.floor(pos.x), Math.floor(pos.y));
+    //   return;
+    // }
+
+    // Si es eyedropper, usar la función específica
     if (state.tool === "eyedropper") {
-      useEyedropper(Math.floor(pos.x), Math.floor(pos.y));
+      const colorInfo = getColorAtPosition(pos.x, pos.y);
+      if (colorInfo) {
+        setEyedropperTooltip({
+          visible: true,
+          x: e.clientX,
+          y: e.clientY - 60, // Posición arriba del cursor
+          color: colorInfo.hex,
+          rgb: colorInfo.rgb,
+        });
+        useEyedropper(Math.floor(pos.x), Math.floor(pos.y));
+      }
       return;
     }
 
@@ -428,6 +515,12 @@ export default function Canvas() {
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Actualizar tooltip del eyedropper si está activo
+    if (state.tool === "eyedropper") {
+      updateEyedropperTooltip(e);
+      return;
+    }
+
     if (!state.isDrawing) return;
 
     const canvas = canvasRef.current;
@@ -544,6 +637,12 @@ export default function Canvas() {
     }
   };
 
+  const handleMouseLeave = () => {
+    stopDrawing();
+    // Ocultar tooltip cuando el mouse sale del canvas
+    setEyedropperTooltip((prev) => ({ ...prev, visible: false }));
+  };
+
   const getCursorStyle = () => {
     switch (state.tool) {
       case "brush":
@@ -577,7 +676,8 @@ export default function Canvas() {
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
+          // onMouseLeave={stopDrawing}
+          onMouseLeave={handleMouseLeave}
           // Eventos táctiles para móviles
           onTouchStart={(e) => {
             e.preventDefault();
@@ -613,6 +713,43 @@ export default function Canvas() {
           }}
         />
       </div>
+
+      {/* Tooltip del Eyedropper */}
+      {eyedropperTooltip.visible && (
+        <div
+          className="fixed z-50 pointer-events-none w-44"
+          style={{
+            left: `${eyedropperTooltip.x}px`,
+            top: `${eyedropperTooltip.y}px`,
+            transform: state.isFullscreen
+              ? "translateX(-50%) translateY(-30%)"
+              : "translateX(-121%) translateY(-80%)",
+          }}
+        >
+          <div className="bg-gray-100 dark:bg-zinc-900 rounded-lg shadow-xl p-3 min-w-max">
+            <div className="flex items-center gap-3">
+              {/* Muestra del color */}
+              <div
+                className="w-8 h-8 rounded-md "
+                style={{ backgroundColor: eyedropperTooltip.color }}
+              />
+
+              {/* Información del color */}
+              <div className="text-sm">
+                <div className="font-bold">
+                  {eyedropperTooltip.color.toUpperCase()}
+                </div>
+                <div>{eyedropperTooltip.rgb}</div>
+              </div>
+
+              {/* Flecha del tooltip */}
+              {/* <div className="absolute top-full left-1/2 transform -translate-x-1/2">
+                <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-zinc-900"></div>
+              </div> */}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
