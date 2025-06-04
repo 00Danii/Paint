@@ -45,7 +45,6 @@ export default function Canvas() {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key.toLowerCase()) {
           case "z":
-            console.log("HOLA");
             e.preventDefault();
             if (e.shiftKey) {
               handleRedo();
@@ -366,6 +365,13 @@ export default function Canvas() {
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const pos = getMousePos(e);
     startPos.current = pos;
+
+    // Si la herramienta es eyedropper, tomar el color y salir
+    if (state.tool === "eyedropper") {
+      useEyedropper(Math.floor(pos.x), Math.floor(pos.y));
+      return;
+    }
+
     dispatch({ type: "SET_DRAWING", payload: true });
 
     const canvas = canvasRef.current;

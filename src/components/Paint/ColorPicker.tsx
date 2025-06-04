@@ -2,11 +2,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { useCanvas } from "@/contexts/CanvasContext";
 import { Colorful } from "@uiw/react-color";
-import { hsvaToHex, hsvaToRgbaString } from "@uiw/color-convert";
+import { Pipette } from "lucide-react";
 
 // Paletas organizadas por categorías
 const colorCategories = {
@@ -217,9 +216,9 @@ const colorCategories = {
 };
 
 // Combinamos todas las paletas para la vista completa
-const allColors = Object.values(colorCategories).flatMap(
-  (category) => category.colors
-);
+// const allColors = Object.values(colorCategories).flatMap(
+//   (category) => category.colors
+// );
 
 export default function ColorPicker() {
   const { state, dispatch } = useCanvas();
@@ -244,10 +243,15 @@ export default function ColorPicker() {
   };
 
   // Actualizar color desde HSL
-  const updateColorFromHSL = () => {
-    const hexColor = hslToHex(hue, saturation, lightness);
-    dispatch({ type: "SET_COLOR", payload: hexColor });
-    setCustomColor(hexColor);
+  // const updateColorFromHSL = () => {
+  //   const hexColor = hslToHex(hue, saturation, lightness);
+  //   dispatch({ type: "SET_COLOR", payload: hexColor });
+  //   setCustomColor(hexColor);
+  // };
+
+  // Función para activar el cuenta gotas
+  const activateEyedropper = () => {
+    dispatch({ type: "SET_TOOL", payload: "eyedropper" });
   };
 
   return (
@@ -273,6 +277,20 @@ export default function ColorPicker() {
             style={{ backgroundColor: state.color }}
           />
           <div className="text-xs font-mono">{state.color.toUpperCase()}</div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={activateEyedropper}
+            className={`h-8 w-8 p-0 ${
+              state.tool === "eyedropper"
+                ? "bg-gray-200 dark:bg-zinc-700 "
+                : ""
+            }`}
+            title="Cuenta gotas - Click en el canvas para tomar color"
+          >
+            <Pipette className="w-4 h-4" />
+          </Button>
+          
         </div>
 
         <TabsContent value="all" className="mt-3">
