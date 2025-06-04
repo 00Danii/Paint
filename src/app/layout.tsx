@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: "00Danii",
     images: [
       {
-        url: "https://i.imgur.com/snkIKQi.png",
+        url: "https://i.imgur.com/HqFHjyT.jpeg",
         width: 1200,
         height: 630,
         alt: "Vista previa del pizarrón",
