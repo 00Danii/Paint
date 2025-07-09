@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pizarrón - Aplicación de Dibujo
 
-## Getting Started
+¡Bienvenido a Pizarrón! Una aplicación de dibujo simple y divertida creada con Next.js, TypeScript y Tailwind CSS.
 
-First, run the development server:
+[**Ver Demo en Vivo**](https://paint-opal-one.vercel.app/)
+
+![Captura de pantalla de la aplicación Pizarrón](https://i.imgur.com/snkIKQi.png) 
+
+## ✨ Características
+
+*   **🎨 Herramientas de Dibujo:**
+    *   **Pincel (B):** Dibuja con diferentes tipos de pinceles.
+    *   **Borrador (E):** Borra partes de tu dibujo.
+    *   **Línea (L):** Dibuja líneas rectas.
+    *   **Rectángulo (R):** Dibuja formas rectangulares.
+    *   **Círculo (C):** Dibuja formas circulares.
+    *   **Difuminar (D):** Difumina los colores en el lienzo.
+    *   **Relleno (F):** Rellena áreas con el color seleccionado.
+*   **🖌️ Tipos de Pincel:**
+    *   Redondo
+    *   Cuadrado
+    *   Textura
+    *   Spray
+*   **🎨 Selector de Color:** Elige cualquier color que desees para tus creaciones.
+*   **↔️ Control de Tamaño/Intensidad:** Ajusta fácilmente el tamaño del pincel o la intensidad del efecto de difuminado.
+*   **↩️ Deshacer y Rehacer (Ctrl+Z / Ctrl+Y):** No te preocupes por los errores, puedes deshacer y rehacer tus acciones fácilmente.
+*   **💾 Guardar y Limpiar:**
+    *   **Guardar:** Descarga tu obra de arte como un archivo PNG.
+    *   **Limpiar:** Comienza de nuevo con un lienzo en blanco.
+*   **🖥️ Modo de Pantalla Completa:** Sumérgete en tu dibujo sin distracciones.
+*   **⌨️ Atajos de Teclado:** Accede rápidamente a las herramientas y funciones para un flujo de trabajo más eficiente.
+*   **🌗 Tema Claro/Oscuro:** La aplicación se adapta al tema de tu sistema para una experiencia visual cómoda.
+
+## 🚀 Cómo Empezar
+
+### Prerrequisitos
+
+Asegúrate de tener Node.js y npm (o yarn/pnpm/bun) instalados en tu sistema.
+
+### Instalación
+
+1.  Clona el repositorio:
+    ```bash
+    git clone https://github.com/tu-usuario/paint.git
+    ```
+2.  Navega al directorio del proyecto:
+    ```bash
+    cd paint
+    ```
+3.  Instala las dependencias:
+    ```bash
+    npm install
+    ```
+
+### Ejecutar la Aplicación
+
+Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Construido Con
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   [Next.js](https://nextjs.org/) - El framework de React para la web.
+*   [TypeScript](https://www.typescriptlang.org/) - Un superconjunto de JavaScript que añade tipado estático.
+*   [Tailwind CSS](https://tailwindcss.com/) - Un framework de CSS de utilidad primero.
+*   [Radix UI](https://www.radix-ui.com/) - Componentes de UI de bajo nivel y sin estilo.
+*   [Lucide React](https://lucide.dev/) - Una hermosa y consistente biblioteca de iconos.
 
-## Learn More
+## 🤝 Contribuciones
 
-To learn more about Next.js, take a look at the following resources:
+Las contribuciones son bienvenidas. Si tienes alguna idea, sugerencia o encuentras un error, por favor abre un issue o envía un pull request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 Licencia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Este proyecto está bajo la Licencia GPLv3. Consulta el archivo `LICENSE` para más detalles.
