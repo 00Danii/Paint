@@ -67,8 +67,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la 
 *   [Next.js](https://nextjs.org/) - El framework de React para la web.
 *   [TypeScript](https://www.typescriptlang.org/) - Un superconjunto de JavaScript que añade tipado estático.
 *   [Tailwind CSS](https://tailwindcss.com/) - Un framework de CSS de utilidad primero.
-*   [Radix UI](https://www.radix-ui.com/) - Componentes de UI de bajo nivel y sin estilo.
-*   [Lucide React](https://lucide.dev/) - Una hermosa y consistente biblioteca de iconos.
+
 
 ## 🤝 Contribuciones
 
